@@ -18,6 +18,13 @@ services:
   ingress:
     image: traefik:v1.7.12-alpine
     ports:
+      # Without this, the detected IP address is always the docker gateway. 
+      - target: 80
+        published: 80
+        mode: host
+      - target: 443
+        published: 443
+        mode: host
     environment:
       - ${ACME_TOKEN_ENV}={{"{{DOCKER-SECRET:acme_token}}"}}
       - ADMIN_USER=${ADMIN_USER:-admin}
@@ -25,17 +32,17 @@ services:
       - TRAEFIK_LETS_ENCRYPT_CHALLENGE=${TRAEFIK_LETS_ENCRYPT_CHALLENGE:---acme.httpChallenge.entryPoint=http}       
       - TRAEFIK_ACME_CASERVER=${TRAEFIK_ACME_CASERVER}
     deploy:
-      replicas: ${TRAEFIK_REPLICAS:-1}
+      mode: global
       placement:
         constraints:
           - node.role == manager
         preferences:
           - spread: node.id
-      labels:
+      labels: 
         - traefik.frontend.rule=Host:traefik.${DOMAIN?Variable DOMAIN not set}
         - traefik.enable=true
         - traefik.port=8080
-        - traefik.tags=ingress 
+        - traefik.tags=ingress
         - traefik.docker.network=${STACK_NAME:-technocore}_ingress
         # Traefik service that listens to HTTP
         - traefik.redirectorservice.frontend.entryPoints=http
@@ -57,4 +64,4 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - traefik-cert:/etc/traefik/acme/ 
     networks:
-      - ingress
+      ingress:
