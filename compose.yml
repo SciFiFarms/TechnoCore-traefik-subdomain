@@ -26,11 +26,11 @@ services:
         published: 443
         mode: host
     environment:
-      - ${ACME_TOKEN_ENV}={{"{{DOCKER-SECRET:acme_token}}"}}
+      - ${ACME_TOKEN_ENV:-SET_ME_PLEASE}={{"{{DOCKER-SECRET:acme_token}}"}}
       - ADMIN_USER=${ADMIN_USER:-admin}
       - EMAIL=$EMAIL
       - TRAEFIK_LETS_ENCRYPT_CHALLENGE=${TRAEFIK_LETS_ENCRYPT_CHALLENGE:---acme.httpChallenge.entryPoint=http}       
-      - TRAEFIK_ACME_CASERVER=${TRAEFIK_ACME_CASERVER}
+      - TRAEFIK_ACME_CASERVER=${TRAEFIK_ACME_CASERVER:-}
     deploy:
       mode: global
       placement:
@@ -39,7 +39,7 @@ services:
         preferences:
           - spread: node.id
       labels: 
-        - traefik.frontend.rule=Host:traefik.${DOMAIN?Variable DOMAIN not set}
+        - traefik.frontend.rule=HostRegexp:traefik.{domain:.+}
         - traefik.enable=true
         - traefik.port=8080
         - traefik.tags=ingress
