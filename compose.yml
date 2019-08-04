@@ -39,9 +39,11 @@ services:
         preferences:
           - spread: node.id
       labels: 
-        - traefik.frontend.rule=HostRegexp:traefik.{domain:.+}
-        - traefik.enable=true
+        - traefik.frontend.rule=$TRAEFIK_SUBDOMAIN_ROUTING_LABEL
+        - traefik.frontend.priority=$TRAEFIK_SUBDOMAIN_ROUTING_LABEL_PRIORITY
         - traefik.port=8080
+        - ${TRAEFIK_BASIC_AUTH}
+        - traefik.enable=true
         - traefik.tags=ingress
         - traefik.docker.network=${STACK_NAME:-technocore}_ingress
         # Traefik service that listens to HTTP
@@ -49,7 +51,6 @@ services:
         - traefik.redirectorservice.frontend.redirect.entryPoint=https
         # Traefik service that listens to HTTPS
         - traefik.webservice.frontend.entryPoints=https
-        - ${TRAEFIK_BASIC_AUTH}
     image: ${image_provider:-scififarms}/technocore-traefik-subdomain:${TAG:-latest}
     logging:
       driver: "${LOGGING_DRIVER}"

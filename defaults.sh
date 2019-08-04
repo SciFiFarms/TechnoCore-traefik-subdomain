@@ -2,7 +2,7 @@
 
 set_service_flag traefik-subdomain true
 
-path_prefix INGRESS traefik
+prefix=traefik
 
 if [ -z "$TRAEFIK_DISABLE_BASIC_AUTH" ]; then
     export TRAEFIK_BASIC_AUTH=traefik.frontend.auth.basic.usersFile=/etc/traefik/usersfile
