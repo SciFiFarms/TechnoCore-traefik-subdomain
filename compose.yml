@@ -31,6 +31,7 @@ services:
       - EMAIL=$EMAIL
       - TRAEFIK_LETS_ENCRYPT_CHALLENGE=${TRAEFIK_LETS_ENCRYPT_CHALLENGE:---acme.httpChallenge.entryPoint=http}       
       - TRAEFIK_ACME_CASERVER=${TRAEFIK_ACME_CASERVER:-}
+      - DOMAIN=$DOMAIN
     deploy:
       mode: global
       placement:
@@ -51,6 +52,13 @@ services:
         - traefik.redirectorservice.frontend.redirect.entryPoint=https
         # Traefik service that listens to HTTPS
         - traefik.webservice.frontend.entryPoints=https
+        # TODO: Move to traefik v2 and either use these, or have alternative to what already exists in entrypoint.sh
+        # https://docs.traefik.io/migration/v1-to-v2/
+        #- traefik.http.routers.${DOMAIN- Some replacement for domain dots for dashes?}.rule=Host(`spencerslab.duckdns.org`)
+        #- traefik.http.routers.technocore.rule=Host(`spencerslab.duckdns.org`)
+        #- traefik.http.routers.technocore.tls=true
+        #- traefik.http.routers.technocore.tls.domains[0].main=spencerslab.duckdns.org
+        #- traefik.http.routers.technocore.tls.domains[0].sans="*.spencerslab.duckdns.org"
     image: ${image_provider:-scififarms}/technocore-traefik-subdomain:${TAG:-latest}
     logging:
       driver: "${LOGGING_DRIVER}"
