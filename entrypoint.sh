@@ -70,3 +70,22 @@ echo "${ADMIN_USER}:${HASHED_PASSWORD}" > /etc/traefik/usersfile
       --logLevel=INFO \
       --accessLog \
       --api
+
+## For Traefik 2.0
+## Could use: --constraints=tag==ingress \
+#/entrypoint.sh --providers.docker=true \
+#    --providers.docker.swarmMode=true \
+#    --providers.docker.watch \
+#    --providers.docker.exposedbydefault=false \
+#    --entryPoints.web.address=":80" \
+#    --entryPoints.web-secure.address=":443" \
+#    --entryPoints.mqtt.address=":1883" \
+#    --entryPoints.mqtt-secure.address=":8883" \
+#    --certificatesResolvers.lets-encrypt.acme.email="traefik.${STACK_NAME}@${DOMAIN}" \
+#    --certificatesResolvers.lets-encrypt.acme.httpChallenge.entryPoint="web" \
+#    --certificatesResolvers.lets-encrypt.acme.storage="/etc/traefik/acme/acme.json" \
+#    ${TRAEFIK_LETS_ENCRYPT_CHALLENGE} \
+#    ${TRAEFIK_ACME_CASERVER} \
+#    --log.level="INFO" \
+#    --accessLog \
+#    --api

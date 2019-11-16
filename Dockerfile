@@ -1,4 +1,6 @@
 FROM traefik:v1.7.12-alpine
+# For Traefik 2.0
+#FROM traefik:v2.0.4
 
 RUN apk add --no-cache openssl
 
