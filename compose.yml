@@ -10,8 +10,8 @@ secrets:
   ingress_admin_password:
     name: ${STACK_NAME:-technocore}_ingress_admin_password
     external: true
-  ingress_acme_token:
-    name: ${STACK_NAME:-technocore}_ingress_acme_token
+  ingress_dns_token:
+    name: ${STACK_NAME:-technocore}_ingress_dns_token
     external: true
 
 services:
@@ -25,7 +25,8 @@ services:
         published: 443
         mode: host
     environment:
-      - ${ACME_TOKEN_ENV:-SET_ME_PLEASE}={{"{{DOCKER-SECRET:acme_token}}"}}
+      - ${DNS_TOKEN_ENV:-SET_DNS_TOKEN_ENV}={{"{{DOCKER-SECRET:dns_token}}"}}
+      - ${DNS_USERNAME_ENV:-SET_DNS_USERNAME_ENV}=${DNS_USERNAME:-SET_ME_PLEASE}
       - ADMIN_USER=${ADMIN_USER:-admin}
       - EMAIL=$EMAIL
       - TRAEFIK_LETS_ENCRYPT_CHALLENGE=${TRAEFIK_LETS_ENCRYPT_CHALLENGE:---acme.httpChallenge.entryPoint=http}       
@@ -83,8 +84,8 @@ services:
     secrets:
       - source: ingress_admin_password
         target: admin_password
-      - source: ingress_acme_token
-        target: acme_token
+      - source: ingress_dns_token
+        target: dns_token
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - traefik-cert:/etc/traefik/acme/ 
