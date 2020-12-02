@@ -62,7 +62,7 @@ echo "${ADMIN_USER}:${HASHED_PASSWORD}" > /etc/traefik/usersfile
       --acme.email=${EMAIL?Variable EMAIL not set} \
       --acme.storage=/etc/traefik/acme/acme.json \
       --acme.entryPoint=https \
-      --acme.domains="*.${DOMAIN},${DOMAIN}" \
+      ${TRAEFIK_DOMAINS} \
       ${TRAEFIK_LETS_ENCRYPT_CHALLENGE} \
       ${TRAEFIK_ACME_CASERVER} \
       --acme.onhostrule=true \

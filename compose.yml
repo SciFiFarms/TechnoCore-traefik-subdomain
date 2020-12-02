@@ -31,8 +31,9 @@ services:
       - ${INGRESS_DNS_TOKEN_ENV_NAME:-SET_INGRESS_DNS_TOKEN_ENV_NAME}={{"{{DOCKER-SECRET:dns_token}}"}}
       - ${INGRESS_DNS_USER_ENV_NAME:-SET_INGRESS_DNS_USER_ENV_NAME}={{"{{DOCKER-SECRET:dns_user}}"}}
       - ADMIN_USER=${ADMIN_USER:-admin}
-      - EMAIL=$EMAIL
-      - TRAEFIK_LETS_ENCRYPT_CHALLENGE=${TRAEFIK_LETS_ENCRYPT_CHALLENGE:---acme.httpChallenge.entryPoint=http}       
+      - EMAIL=$MAINTAINER_EMAIL
+      - TRAEFIK_LETS_ENCRYPT_CHALLENGE=${TRAEFIK_LETS_ENCRYPT_CHALLENGE:-"--acme.httpChallenge.entryPoint=http"}
+      - TRAEFIK_DOMAINS=${TRAEFIK_DOMAINS}       
       ## For Traefik 2.0
       #- TRAEFIK_LETS_ENCRYPT_CHALLENGE=${TRAEFIK_LETS_ENCRYPT_CHALLENGE:---certificatesResolvers.lets-encrypt.acme.httpChallenge.entryPoint=http}       
       - TRAEFIK_ACME_CASERVER=${TRAEFIK_ACME_CASERVER:-}
