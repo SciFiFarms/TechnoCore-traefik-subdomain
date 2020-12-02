@@ -10,6 +10,9 @@ secrets:
   ingress_admin_password:
     name: ${STACK_NAME:-technocore}_ingress_admin_password
     external: true
+  ingress_dns_user:
+    name: ${STACK_NAME:-technocore}_ingress_dns_user
+    external: true
   ingress_dns_token:
     name: ${STACK_NAME:-technocore}_ingress_dns_token
     external: true
@@ -25,8 +28,8 @@ services:
         published: 443
         mode: host
     environment:
-      - ${DNS_TOKEN_ENV:-SET_DNS_TOKEN_ENV}={{"{{DOCKER-SECRET:dns_token}}"}}
-      - ${DNS_USERNAME_ENV:-SET_DNS_USERNAME_ENV}=${DNS_USERNAME:-SET_ME_PLEASE}
+      - ${INGRESS_DNS_TOKEN_ENV_NAME:-SET_INGRESS_DNS_TOKEN_ENV_NAME}={{"{{DOCKER-SECRET:dns_token}}"}}
+      - ${INGRESS_DNS_USER_ENV_NAME:-SET_INGRESS_DNS_USER_ENV_NAME}={{"{{DOCKER-SECRET:dns_user}}"}}
       - ADMIN_USER=${ADMIN_USER:-admin}
       - EMAIL=$EMAIL
       - TRAEFIK_LETS_ENCRYPT_CHALLENGE=${TRAEFIK_LETS_ENCRYPT_CHALLENGE:---acme.httpChallenge.entryPoint=http}       
@@ -76,6 +79,10 @@ services:
         ## Migh need these?
         #- traefik.tags=ingress
         #- traefik.docker.network=${STACK_NAME:-technocore}_ingress
+        - user-provided-secret-dns_token=ingress dns_token
+        - user-provided-secret-dns_user=ingress dns_user
+        - secrets-to-ignore-list=$SECRETS_TO_IGNORE
+
     image: ${image_provider:-scififarms}/technocore-traefik-subdomain:${TAG:-latest}
     logging:
       driver: "${LOGGING_DRIVER}"
@@ -86,6 +93,8 @@ services:
         target: admin_password
       - source: ingress_dns_token
         target: dns_token
+      - source: ingress_dns_user
+        target: dns_user
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - traefik-cert:/etc/traefik/acme/ 
