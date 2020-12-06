@@ -1,4 +1,4 @@
-FROM traefik:v1.7.12-alpine
+FROM traefik:v1.7.26-alpine
 # For Traefik 2.0
 #FROM traefik:v2.0.4
 
