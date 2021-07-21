@@ -4,7 +4,7 @@ networks:
   ingress:
 
 volumes:
-  traefik-cert: 
+  traefik-cert:
 
 secrets:
   ingress_admin_password:
@@ -20,7 +20,7 @@ secrets:
 services:
   ingress:
     ports:
-      # Without this, the detected IP address is always the docker gateway. 
+      # Without this, the detected IP address is always the docker gateway.
       - target: 80
         published: 80
         mode: host
@@ -33,9 +33,9 @@ services:
       - ADMIN_USER=${ADMIN_USER:-admin}
       - EMAIL=$MAINTAINER_EMAIL
       - TRAEFIK_LETS_ENCRYPT_CHALLENGE=${TRAEFIK_LETS_ENCRYPT_CHALLENGE:-"--acme.httpChallenge.entryPoint=http"}
-      - TRAEFIK_DOMAINS=${TRAEFIK_DOMAINS}       
+      - TRAEFIK_DOMAINS=${TRAEFIK_DOMAINS}
       ## For Traefik 2.0
-      #- TRAEFIK_LETS_ENCRYPT_CHALLENGE=${TRAEFIK_LETS_ENCRYPT_CHALLENGE:---certificatesResolvers.lets-encrypt.acme.httpChallenge.entryPoint=http}       
+      #- TRAEFIK_LETS_ENCRYPT_CHALLENGE=${TRAEFIK_LETS_ENCRYPT_CHALLENGE:---certificatesResolvers.lets-encrypt.acme.httpChallenge.entryPoint=http}
       - TRAEFIK_ACME_CASERVER=${TRAEFIK_ACME_CASERVER:-}
       - DOMAIN=$DOMAIN
     deploy:
@@ -45,7 +45,7 @@ services:
           - node.role == manager
         preferences:
           - spread: node.id
-      labels: 
+      labels:
         - traefik.frontend.rule=$TRAEFIK_SUBDOMAIN_ROUTING_LABEL
         - traefik.frontend.priority=$TRAEFIK_SUBDOMAIN_ROUTING_LABEL_PRIORITY
         - traefik.port=8080
@@ -62,7 +62,7 @@ services:
         # https://docs.traefik.io/migration/v1-to-v2/
         #- traefik.http.routers.traefik.service=api@internal
         #- traefik.http.services.traefik.loadbalancer.server.port=8080
-        ## TODO: This probably needs to support multiple domains. 
+        ## TODO: This probably needs to support multiple domains.
         #- traefik.http.routers.traefik.rule=$TRAEFIK_SUBDOMAIN_ROUTING_LABEL
         #- traefik.http.routers.traefik.priority=$TRAEFIK_SUBDOMAIN_ROUTING_LABEL_PRIORITY
         #- traefik.http.routers.traefik.entrypoints=web-secure
@@ -98,6 +98,6 @@ services:
         target: dns_user
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - traefik-cert:/etc/traefik/acme/ 
+      - traefik-cert:/etc/traefik/acme/
     networks:
       ingress:
